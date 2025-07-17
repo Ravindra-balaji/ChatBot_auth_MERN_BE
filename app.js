@@ -14,24 +14,29 @@ const app = express();
 app.use(morgan("dev"));
 
 const allowedOrigins = [
-  "https://chat-bot-auth-mern-8rpeyitd4-ravindra-balaji-nagulas-projects.vercel.app",
-  "https://chat-bot-auth-mern-719l2b7mf-ravindra-balaji-nagulas-projects.vercel.app",
-  "http://localhost:5173" // for local dev
+  "http://localhost:3000",
+  "https://chat-bot-auth-mern-fe.vercel.app",
+  /\.vercel\.app$/ // For dynamic Vercel preview URLs
 ];
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (!origin) return callback(null, true); // Allow Postman or curl
+    if (
+      allowedOrigins.some(o =>
+        typeof o === "string" ? o === origin : o instanceof RegExp && o.test(origin)
+      )
+    ) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true, // if you’re sending cookies or auth headers
+};
 
+// ✅ Register CORS middleware
+app.use(cors(corsOptions));
 
 app.use(express.json());
 app.use(cookieParser());
