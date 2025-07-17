@@ -13,12 +13,25 @@ const app = express();
 
 app.use(morgan("dev"));
 
+const allowedOrigins = [
+  "https://chat-bot-auth-mern-8rpeyitd4-ravindra-balaji-nagulas-projects.vercel.app",
+  "https://chat-bot-auth-mern-719l2b7mf-ravindra-balaji-nagulas-projects.vercel.app",
+  "http://localhost:5173" // for local dev
+];
+
 app.use(
   cors({
-    origin: "https://chat-bot-auth-mern-8rpeyitd4-ravindra-balaji-nagulas-projects.vercel.app",
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
 
 app.use(express.json());
 app.use(cookieParser());
