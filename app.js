@@ -15,7 +15,7 @@ app.use(morgan("dev"));
 
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL,
+    origin: "https://chat-bot-auth-mern-8rpeyitd4-ravindra-balaji-nagulas-projects.vercel.app",
     credentials: true,
   })
 );
